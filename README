@@ -1,0 +1,76 @@
+apascan v0.1 - Copyright (C) 2008 James Le Cuirot <chewi@aura-online.co.uk>
+Distributed under the GNU General Public License v2 with no warranty.
+
+Description
+-----------
+apascan scans the given block device (usually a hard drive) for the APA
+partition table format used by the Sony PlayStation 2. It then creates
+mappings for any partitions it finds, allowing you to use these partitions
+like normal Linux block devices. In order words, you can format them using
+mkfs/mkswap and mount them in the usual way. You can even mount games
+installed using HDLoader!
+
+Obtaining
+---------
+The latest version of apascan can be obtained from Gentoo PS2's site located
+at http://gps2.aura-online.co.uk.
+
+Requirements
+------------
+apascan will only work on Linux 2.6 and possibly Linux 2.4 but the latter is
+untested. It will not work on Windows, OSX or BSD so don't ask. This is
+because it makes use of Linux's device-mapper. Ensure the device-mapper is
+enabled in your kernel, either built-in or as a module named dm-mod. Its
+configuration name is CONFIG_BLK_DEV_DM and it can be found through menuconfig
+under Device Drivers -> Multiple devices driver support (RAID and LVM).
+libdevmapper is also required. This is probably available through your
+distributions's package manager but it can also be obtained from
+http://sourceware.org/dm.
+
+Installation
+------------
+The usual mantra of "./configure && make && make install" should do the trick.
+See INSTALL for more details.
+
+Usage
+-----
+Run the program using "apascan -h" for information on how to use it. All
+mapped partitions will appear under /dev/mapper.
+
+Bugs
+----
+No bugs as such have been found yet. Badly written partition tables may cause
+a problem but this is not really the fault of apascan. There is currently no
+support for hard drives larger than 127GB, either through 48-bit LBA or
+ToxicOS's APAEXT partition table format. Please file any bugs you find at
+http://gps2.aura-online.co.uk. Make sure you choose the "apascan" component.
+
+ps2fs
+-----
+Some partitions such as "HDLoader Settings" are formatted using the ps2fs
+filesystem, which requires an additional driver. There is one available from
+http://playstation2-linux.com/projects/apa but it is badly outdated and does
+not work with recent versions of Linux. A FUSE-based fork of this driver has
+been created at http://ps2fs-tng.googlecode.com but it appears to read the
+entire disk rather than individual partitions so it is unlikely to work in
+conjunction with apascan. It has not been tested.
+
+Partitioning
+------------
+There are a number of tools available for manipulating APA partition tables.
+HDLoader and its associated tools, such as hdl_dump, will format any hard
+drives they do not recognise but since they are only concerned with games,
+they do not allow you to add empty partitions. The DMS HDD Format Tool does
+allow you to do these things but a recent test found that it created a
+partition table that nothing besides itself and uLaunchELF were able to read.
+This needs to be further investigated. ps2fdisk allows you to manipulate
+traditional PS2 Linux partitions (those named __linux) but ignores all others.
+Finally, there is the official Sony HDD Utility Disc but this has not been
+tested at all.
+
+License
+-------
+apascan is distributed under the GNU GPLv2 with no warranty. See COPYING for
+more details. It would have been distributed under v3 but the ps2.h file,
+which was taken from MontaVista's 2.4.17 PS2 Linux kernel, was distributed
+under v2 only, making it incompatible with v3.
